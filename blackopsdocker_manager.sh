@@ -35,58 +35,51 @@ function animate_dots() {
 }
 
 function install() {
-  print_info "Verificando que el script '${LOCAL_SCRIPT}' exista en la carpeta actual..."
+  print_info "🔍 Verificando que el script '${LOCAL_SCRIPT}' exista en la carpeta actual..."
   if [[ ! -f "$LOCAL_SCRIPT" ]]; then
-    print_error "No se encontró el archivo '${LOCAL_SCRIPT}'. Asegúrate de ejecutarlo desde la raíz del proyecto."
+    print_error "❌ No se encontró '${LOCAL_SCRIPT}'. Asegúrate de ejecutar este instalador desde la raíz del proyecto."
     exit 1
   fi
 
-  print_info "Copiando '${LOCAL_SCRIPT}' a '${TARGET}'"
-  sudo cp "$LOCAL_SCRIPT" "$TARGET"
+  local project_root
+  project_root="$(pwd)"
+
+  print_info "📦 Preparando script con la ruta absoluta del proyecto inyectada..."
+  temp_file="$(mktemp)"
+  echo "#!/bin/bash" > "$temp_file"
+  echo "PROJECT_ROOT=\"$project_root\"" >> "$temp_file"
+  tail -n +2 "$LOCAL_SCRIPT" >> "$temp_file"
+
+  print_info "🔧 Copiando script a '$TARGET' como comando global 'blackopsdocker'..."
+  sudo cp "$temp_file" "$TARGET"
+  sudo chmod 755 "$TARGET"
+  rm -f "$temp_file"
   animate_dots
 
-  print_info "Asignando permisos ejecutables a '${TARGET}'"
-  sudo chmod +x "$TARGET"
-  animate_dots
-
-  print_info "Verificando que el comando 'blackopsdocker' esté disponible en el PATH"
-  if command -v blackopsdocker >/dev/null 2>&1; then
-    print_success "¡blackopsdocker instalado correctamente! 🎉"
-    echo ""
-    echo -e "${CYAN}Puedes usarlo ahora desde cualquier carpeta con el comando:${RESET}"
-    echo -e "  ${GREEN}blackopsdocker <comando>${RESET}"
-    echo ""
-    echo -e "Ejemplo:"
-    echo -e "  ${GREEN}blackopsdocker up${RESET}"
-  else
-    print_error "blackopsdocker no está disponible en el PATH. Revisa la instalación."
-  fi
+  print_success "✅ ¡Instalación completada!"
+  echo -e "\n🎉 Ya puedes ejecutar el comando desde cualquier parte con:"
+  echo -e "   ${GREEN}blackopsdocker up${RESET} (por ejemplo)"
+  echo -e "\nℹ️ Ejecuta ${CYAN}blackopsdocker help${RESET} para ver todos los comandos disponibles.\n"
 }
 
 function uninstall() {
-  print_warn "Comenzando proceso de desinstalación..."
-
+  print_warn "🧹 Comenzando desinstalación de blackopsdocker..."
   if [[ -f "$TARGET" ]]; then
-    print_info "Eliminando '${TARGET}'"
     sudo rm "$TARGET"
     animate_dots
-    print_success "blackopsdocker ha sido desinstalado correctamente. 👋"
+    print_success "✅ Comando 'blackopsdocker' eliminado de /usr/local/bin"
   else
-    print_warn "No se encontró '${TARGET}'. ¿Ya estaba desinstalado?"
+    print_warn "No se encontró el comando instalado. ¿Ya estaba desinstalado?"
   fi
 }
 
 function usage() {
-  cat <<EOF
-${CYAN}Uso:${RESET} $0 {install|uninstall|help}
-
-  ${GREEN}install${RESET}   - Instala blackopsdocker en /usr/local/bin
-  ${RED}uninstall${RESET} - Elimina blackopsdocker de /usr/local/bin
-  help      - Muestra esta ayuda
-
-Ejemplo:
-  ${GREEN}./blackopsdocker_manager.sh install${RESET}
-EOF
+  echo -e "${CYAN}Uso:${RESET} ./blackopsdocker_manager.sh {install|uninstall|help}\n"
+  echo -e "  ${GREEN}install${RESET}    - Instala el comando global blackopsdocker"
+  echo -e "  ${RED}uninstall${RESET}  - Desinstala el comando global blackopsdocker"
+  echo -e "  help        - Muestra esta ayuda\n"
+  echo -e "Ejemplo:"
+  echo -e "  ${GREEN}./blackopsdocker_manager.sh install${RESET}"
 }
 
 if [[ $# -ne 1 ]]; then
