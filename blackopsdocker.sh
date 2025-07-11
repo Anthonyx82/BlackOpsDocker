@@ -37,7 +37,7 @@ function docker_compose_in_dirs() {
     local compose_file="$ROOT_DIR/$d/docker-compose.yml"
     if [[ -f "$compose_file" ]]; then
       echo -e "\n==> Ejecutando 'docker-compose $cmd' en $d"
-      docker-compose -f "$compose_file" $cmd
+      docker compose -f "$compose_file" $cmd
     else
       echo "Aviso: No se encontró docker-compose.yml en $d, se omite."
     fi
