@@ -16,7 +16,7 @@ Para facilitar la gestión conjunta, incluye el script `blackopsdocker` que perm
 .
 ├── akuma/
 │   └── docker-compose.yml
-├── blackopsdocker\_manager.sh
+├── blackopsdocker_manager.sh
 ├── blackopsdocker.sh
 ├── ftp-server/
 │   └── docker-compose.yml
@@ -34,12 +34,12 @@ Para facilitar la gestión conjunta, incluye el script `blackopsdocker` que perm
 ├── traefik/
 │   ├── acme.json
 │   ├── docker-compose.yml
-│   ├── dynamic\_conf.yml
+│   ├── dynamic_conf.yml
 │   ├── fullchain.pem
 │   ├── logs/
 │   └── traefik.yml
 ├── .env.example
-└── .env (NO versionado)
+└── .env (NOT versioned)
 ```
 
 ---
