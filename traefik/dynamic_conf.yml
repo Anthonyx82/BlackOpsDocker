@@ -1,0 +1,25 @@
+http:
+  middlewares:
+    redirect:
+      redirectScheme:
+        scheme: https
+    my-sablier:
+      plugin:
+        sablier:
+          dynamic:
+            displayName: sablier
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: hacker-terminal
+          group: default
+          names: whoami,nginx
+          sablierUrl: http://sablier:10000
+          sessionDuration: 1m
+    fail2ban:
+      plugin:
+        fail2-ban:
+          maxRetries: 5
+          findTime: 10m
+          banTime: 4h
+          whitelist:
+            - 127.0.0.1

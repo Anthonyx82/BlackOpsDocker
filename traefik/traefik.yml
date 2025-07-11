@@ -1,0 +1,66 @@
+# Habilitar Tracing con OpenTelemetry (usando Jaeger como backend)
+tracing:
+  otlp:
+    http:
+      endpoint: "http://jaeger:4318/v1/traces"  # URL del colector OpenTelemetry que recibe las trazas
+
+# Habilitar métricas Prometheus
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addServicesLabels: true
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+  metrics:
+    address: ":8082"
+
+api:
+  dashboard: true
+  insecure: false  # IMPORTANTE: No uses `insecure: true` en producción
+
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    filename: "/etc/traefik/dynamic.yml"
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: "antoniomartinmanzanares2004@gmail.com"  # Pon aquí tu email para Let’s Encrypt
+      storage: "acme.json"
+      keyType: "RSA4096"
+      httpChallenge:
+        entryPoint: "web"  # Desafío HTTP para obtener el certificado
+
+http:
+  routers:
+    traefik:
+      rule: "Host(`anthonyx82.ddns.net`) && PathPrefix(`/traefik`)"
+      service: "api@internal"
+      entryPoints:
+        - "websecure"
+      tls:
+        certResolver: "myresolver"
+
+experimental:
+  plugins:
+    sablier:
+      moduleName: "github.com/sablierapp/sablier"
+      version: "v1.8.5"
+    fail2ban:
+      moduleName: "github.com/tomMoulard/fail2ban"
+      version: "v0.8.3"
+
+log:
+  level: DEBUG
+
+# Habilitar access log
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  bufferingSize: 10
