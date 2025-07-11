@@ -1,6 +1,0 @@
-.env
-*.log
-*.swp
-*.bak
-*.tmp
-.DS_Store

@@ -1,4 +1,7 @@
 .env
 acme.json
 logs/
-fullchain.pem
+*.pem
+*.key
+*~
+*.swp
