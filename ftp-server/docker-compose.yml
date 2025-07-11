@@ -6,8 +6,8 @@ services:
       - "21:21"
       - "21000-21010:21000-21010"
     environment:
-      - USERS=${USERS}
-      - ADDRESS=${ADDRESS}
+      - USERS=${FTP_USERS}
+      - ADDRESS=${FTP_ADDRESS}
     volumes:
       - /raid0/ftpsv/ftp:/raid0/ftpsv/ftp
     restart: unless-stopped
