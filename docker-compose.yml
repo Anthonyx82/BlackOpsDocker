@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   uptime-kuma:
     image: louislam/uptime-kuma:1
@@ -23,7 +25,7 @@ services:
     container_name: prometheus
     restart: unless-stopped
     volumes:
-      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/etc/prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --web.external-url=https://anthonyx82.ddns.net/prometheus/
@@ -48,7 +50,7 @@ services:
       - USERS=${FTP_USERS}
       - ADDRESS=${FTP_ADDRESS}
     volumes:
-      - /raid0/ftpsv/ftp:/raid0/ftpsv/ftp
+      - ftp_data:/raid0/ftpsv/ftp
     restart: unless-stopped
 
   traefik:
@@ -60,9 +62,9 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/traefik.yml:/traefik.yml:ro
-      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/acme.json:/acme.json
-      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/dynamic_conf.yml:/etc/traefik/dynamic.yml:ro
+      - traefik_config:/etc/traefik:ro
+      - traefik_acme:/acme.json
+      - traefik_dynamic:/etc/traefik/dynamic.yml:ro
       - traefik_logs:/var/log/traefik
     networks:
       - web
@@ -105,7 +107,7 @@ services:
       - web
       - internal
     volumes:
-      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/jaeger/nginx.conf:/etc/nginx/nginx.conf:ro
+      - jaeger_proxy_config:/etc/nginx:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jaeger.rule=Host(`anthonyx82.ddns.net`) && PathPrefix(`/jaeger`)"
@@ -153,4 +155,46 @@ volumes:
     driver_opts:
       type: none
       device: /raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_traefik_logs
+      o: bind
+
+  prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_prometheus_data
+      o: bind
+
+  jaeger_proxy_config:
+    driver: local
+    driver_opts:
+      type: none
+      device: /raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_jaeger_proxy_config
+      o: bind
+
+  ftp_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /raid0/ftpsv/ftp
+      o: bind
+
+  traefik_config:
+    driver: local
+    driver_opts:
+      type: none
+      device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik
+      o: bind
+
+  traefik_acme:
+    driver: local
+    driver_opts:
+      type: none
+      device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/acme.json
+      o: bind
+
+  traefik_dynamic:
+    driver: local
+    driver_opts:
+      type: none
+      device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/dynamic_conf.yml
       o: bind
