@@ -63,8 +63,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik_config:/etc/traefik:ro
-      - traefik_acme:/acme.json
-      - traefik_dynamic:/etc/traefik/dynamic.yml:ro
+      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/acme.json:/acme.json
+      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik_dynamic:/etc/traefik/dynamic.yml:ro
       - traefik_logs:/var/log/traefik
     networks:
       - web
@@ -183,18 +183,4 @@ volumes:
     driver_opts:
       type: none
       device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik
-      o: bind
-
-  traefik_acme:
-    driver: local
-    driver_opts:
-      type: none
-      device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/acme.json
-      o: bind
-
-  traefik_dynamic:
-    driver: local
-    driver_opts:
-      type: none
-      device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/dynamic_conf.yml
       o: bind
