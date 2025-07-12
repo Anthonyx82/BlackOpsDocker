@@ -22,7 +22,7 @@ services:
     container_name: prometheus
     restart: unless-stopped
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --web.external-url=https://anthonyx82.ddns.net/prometheus/
@@ -59,10 +59,10 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/traefik.yml:/traefik.yml:ro
-      - ./traefik/acme.json:/acme.json
-      - ./traefik/dynamic_conf.yml:/etc/traefik/dynamic.yml:ro
-      - ./traefik/logs:/var/log/traefik
+      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/traefik.yml:/traefik.yml:ro
+      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/acme.json:/acme.json
+      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/dynamic_conf.yml:/etc/traefik/dynamic.yml:ro
+      - traefik_logs:/var/log/traefik
     networks:
       - web
     labels:
@@ -86,16 +86,6 @@ services:
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
 
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    restart: always
-    ports:
-      - "127.0.0.1:9000:9000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-
   jaeger:
     image: jaegertracing/all-in-one:latest
     container_name: jaeger
@@ -114,7 +104,7 @@ services:
       - web
       - internal
     volumes:
-      - ./jaeger/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/jaeger/nginx.conf:/etc/nginx/nginx.conf:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jaeger.rule=Host(`anthonyx82.ddns.net`) && PathPrefix(`/jaeger`)"
@@ -150,5 +140,16 @@ networks:
     driver: bridge
 
 volumes:
-  uptime-kuma-data:
-  portainer_data:
+  uptime_kuma_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /raid0/ftpsv/ftp/Docker/volumes/uptime_kuma_data
+      o: bind
+
+  traefik_logs:
+    driver: local
+    driver_opts:
+      type: none
+      device: /raid0/ftpsv/ftp/Docker/volumes/traefik_logs
+      o: bind
