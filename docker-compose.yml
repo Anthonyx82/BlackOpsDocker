@@ -1,10 +1,13 @@
+version: "3.8"
+
 services:
   uptime-kuma:
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
     restart: unless-stopped
-    env_file:
-      - .env
+    environment:
+      - KUMA_ADMIN_USER=${KUMA_ADMIN_USER}
+      - KUMA_ADMIN_PASSWORD=${KUMA_ADMIN_PASSWORD}
     volumes:
       - uptime_kuma_data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
