@@ -166,7 +166,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_jaeger_proxy_config
+      device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/jaeger
       o: bind
 
   ftp_data:
