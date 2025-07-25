@@ -1,7 +1,17 @@
 #!/bin/bash
 
-# PROJECT_ROOT será inyectado por el instalador. No editar manualmente.
-PROJECT_ROOT="${PROJECT_ROOT:-}"
+# ================= DETECTAR RUTA RAÍZ DEL PROYECTO ================= #
+
+# Ruta absoluta del script (resuelve symlinks si es instalado globalmente)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+PROJECT_ROOT="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+
+COMPOSE_FILE="$PROJECT_ROOT/docker-compose.yml"
 
 # ================= FUNCIONES ================= #
 
@@ -13,59 +23,48 @@ function print_error() {
   echo -e "\e[31m[ERROR]\e[0m $1"
 }
 
-function check_project_root() {
-  if [[ -z "$PROJECT_ROOT" || ! -d "$PROJECT_ROOT" || ! -f "$PROJECT_ROOT/.env" ]]; then
-    print_error "No se pudo encontrar la raíz del proyecto (se espera carpeta con .env y subdirectorios con docker-compose)."
+function check_compose_file() {
+  if [[ ! -f "$COMPOSE_FILE" ]]; then
+    print_error "No se encontró docker-compose.yml en $PROJECT_ROOT"
     exit 1
   fi
-}
-
-function list_services() {
-  echo "Servicios detectados:"
-  find "$PROJECT_ROOT" -mindepth 2 -maxdepth 2 -name "docker-compose.yml" -exec dirname {} \; | sed "s|$PROJECT_ROOT/|- |"
-}
-
-function run_in_services() {
-  local cmd="$1"
-  shift
-  find "$PROJECT_ROOT" -mindepth 2 -maxdepth 2 -name "docker-compose.yml" | while read -r compose_file; do
-    local dir
-    dir=$(dirname "$compose_file")
-    print_header "Ejecutando 'docker compose $cmd' en $(basename "$dir")"
-    (cd "$dir" && docker compose "$cmd" "$@")
-    echo
-  done
 }
 
 # ================= COMANDOS ================= #
 
 case "$1" in
   up)
-    check_project_root
-    run_in_services up -d
+    check_compose_file
+    print_header "Levantando servicios desde $COMPOSE_FILE"
+    docker compose -f "$COMPOSE_FILE" up -d
     ;;
   down)
-    check_project_root
-    run_in_services down
+    check_compose_file
+    print_header "Deteniendo servicios desde $COMPOSE_FILE"
+    docker compose -f "$COMPOSE_FILE" down
     ;;
   restart)
-    check_project_root
-    run_in_services down
-    run_in_services up -d
+    check_compose_file
+    print_header "Reiniciando servicios desde $COMPOSE_FILE"
+    docker compose -f "$COMPOSE_FILE" down
+    docker compose -f "$COMPOSE_FILE" up -d
     ;;
   logs)
-    check_project_root
-    run_in_services logs
+    check_compose_file
+    docker compose -f "$COMPOSE_FILE" logs
     ;;
   ps)
-    check_project_root
-    run_in_services ps
+    check_compose_file
+    docker compose -f "$COMPOSE_FILE" ps
     ;;
   env)
-    check_project_root
-    echo "Contenido del archivo .env:"
-    echo "----------------------------"
-    cat "$PROJECT_ROOT/.env"
+    if [[ -f "$PROJECT_ROOT/.env" ]]; then
+      echo "Contenido del archivo .env:"
+      echo "----------------------------"
+      cat "$PROJECT_ROOT/.env"
+    else
+      echo "No existe archivo .env en el proyecto."
+    fi
     ;;
   prune)
     echo -e "\e[31m¡ADVERTENCIA!\e[0m Esto eliminará todos los volúmenes, redes y contenedores detenidos."
@@ -76,25 +75,20 @@ case "$1" in
       echo "Cancelado."
     fi
     ;;
-  list)
-    check_project_root
-    list_services
-    ;;
   help|--help|-h|"")
-    echo -e "\e[36mBlackOpsDocker CLI\e[0m - Gestión centralizada de múltiples docker-compose"
+    echo -e "\e[36mBlackOpsDocker CLI\e[0m - Gestión de docker-compose principal"
     echo
     echo "Uso:"
     echo "  blackopsdocker <comando>"
     echo
     echo "Comandos disponibles:"
-    echo "  up         - Levanta todos los servicios"
-    echo "  down       - Detiene todos los servicios"
-    echo "  restart    - Reinicia todos los servicios"
-    echo "  logs       - Muestra los logs de todos los servicios"
-    echo "  ps         - Lista contenedores en ejecución"
-    echo "  env        - Muestra el archivo .env actual"
-    echo "  prune      - Elimina recursos de Docker detenidos"
-    echo "  list       - Lista servicios docker-compose encontrados"
+    echo "  up         - Levanta los servicios"
+    echo "  down       - Detiene los servicios"
+    echo "  restart    - Reinicia los servicios"
+    echo "  logs       - Muestra los logs"
+    echo "  ps         - Lista contenedores"
+    echo "  env        - Muestra el archivo .env"
+    echo "  prune      - Elimina recursos Docker detenidos"
     echo "  help       - Muestra esta ayuda"
     ;;
   *)

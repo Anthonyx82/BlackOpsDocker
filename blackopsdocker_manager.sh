@@ -7,7 +7,7 @@ RED="\e[31m"
 CYAN="\e[36m"
 RESET="\e[0m"
 
-LOCAL_SCRIPT="blackopsdocker.sh"
+SOURCE_FILE="blackopsdocker.sh"
 TARGET="/usr/local/bin/blackopsdocker"
 
 function print_info() {
@@ -35,25 +35,15 @@ function animate_dots() {
 }
 
 function install() {
-  print_info "🔍 Verificando que el script '${LOCAL_SCRIPT}' exista en la carpeta actual..."
-  if [[ ! -f "$LOCAL_SCRIPT" ]]; then
-    print_error "❌ No se encontró '${LOCAL_SCRIPT}'. Asegúrate de ejecutar este instalador desde la raíz del proyecto."
+  print_info "🔍 Verificando que el script '${SOURCE_FILE}' exista en la carpeta actual..."
+  if [[ ! -f "$SOURCE_FILE" ]]; then
+    print_error "❌ No se encontró '${SOURCE_FILE}'. Asegúrate de ejecutar este instalador desde la raíz del proyecto."
     exit 1
   fi
 
-  local project_root
-  project_root="$(pwd)"
-
-  print_info "📦 Preparando script con la ruta absoluta del proyecto inyectada..."
-  temp_file="$(mktemp)"
-  echo "#!/bin/bash" > "$temp_file"
-  echo "PROJECT_ROOT=\"$project_root\"" >> "$temp_file"
-  tail -n +2 "$LOCAL_SCRIPT" >> "$temp_file"
-
   print_info "🔧 Copiando script a '$TARGET' como comando global 'blackopsdocker'..."
-  sudo cp "$temp_file" "$TARGET"
-  sudo chmod 755 "$TARGET"
-  rm -f "$temp_file"
+  sudo cp "$SOURCE_FILE" "$TARGET"
+  sudo chmod +x "$TARGET"
   animate_dots
 
   print_success "✅ ¡Instalación completada!"
@@ -81,6 +71,8 @@ function usage() {
   echo -e "Ejemplo:"
   echo -e "  ${GREEN}./blackopsdocker_manager.sh install${RESET}"
 }
+
+# ========== MAIN ========== #
 
 if [[ $# -ne 1 ]]; then
   usage
