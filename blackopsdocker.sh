@@ -2,7 +2,6 @@
 
 # ================= DETECTAR RUTA RAÍZ DEL PROYECTO ================= #
 
-# Ruta absoluta del script (resuelve symlinks si es instalado globalmente)
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do
   DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"

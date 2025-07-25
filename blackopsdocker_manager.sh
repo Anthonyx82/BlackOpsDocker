@@ -1,14 +1,16 @@
 #!/bin/bash
 
-# Colores para mensajes
+# Colores
 GREEN="\e[32m"
 YELLOW="\e[33m"
 RED="\e[31m"
 CYAN="\e[36m"
 RESET="\e[0m"
 
-SOURCE_FILE="blackopsdocker.sh"
+PROJECT_DIR="$(pwd)"
 TARGET="/usr/local/bin/blackopsdocker"
+LAUNCHER_CONTENT="#!/bin/bash
+\"$PROJECT_DIR/blackopsdocker.sh\" \"\$@\""
 
 function print_info() {
   echo -e "${CYAN}[INFO]${RESET} $1"
@@ -23,32 +25,29 @@ function print_warn() {
 }
 
 function print_error() {
-  echo -e "${RED}[ERROR]${RESET} $1"
+  echo -e "${RED}[ERROR]\e[0m $1"
 }
 
 function animate_dots() {
-  for i in {1..3}; do
-    echo -n "."
-    sleep 0.5
-  done
+  for i in {1..3}; do echo -n "."; sleep 0.5; done
   echo ""
 }
 
 function install() {
-  print_info "🔍 Verificando que el script '${SOURCE_FILE}' exista en la carpeta actual..."
-  if [[ ! -f "$SOURCE_FILE" ]]; then
-    print_error "❌ No se encontró '${SOURCE_FILE}'. Asegúrate de ejecutar este instalador desde la raíz del proyecto."
+  print_info "🔍 Verificando que 'blackopsdocker.sh' existe en la carpeta actual..."
+  if [[ ! -f "blackopsdocker.sh" ]]; then
+    print_error "❌ No se encontró 'blackopsdocker.sh'. Ejecuta desde el directorio correcto."
     exit 1
   fi
 
-  print_info "🔧 Copiando script a '$TARGET' como comando global 'blackopsdocker'..."
-  sudo cp "$SOURCE_FILE" "$TARGET"
+  print_info "📄 Generando script lanzador en '$TARGET'..."
+  echo "$LAUNCHER_CONTENT" | sudo tee "$TARGET" > /dev/null
   sudo chmod +x "$TARGET"
   animate_dots
 
   print_success "✅ ¡Instalación completada!"
   echo -e "\n🎉 Ya puedes ejecutar el comando desde cualquier parte con:"
-  echo -e "   ${GREEN}blackopsdocker up${RESET} (por ejemplo)"
+  echo -e "   ${GREEN}blackopsdocker up${RESET}"
   echo -e "\nℹ️ Ejecuta ${CYAN}blackopsdocker help${RESET} para ver todos los comandos disponibles.\n"
 }
 
@@ -59,7 +58,7 @@ function uninstall() {
     animate_dots
     print_success "✅ Comando 'blackopsdocker' eliminado de /usr/local/bin"
   else
-    print_warn "No se encontró el comando instalado. ¿Ya estaba desinstalado?"
+    print_warn "No se encontró el comando instalado."
   fi
 }
 
@@ -67,12 +66,10 @@ function usage() {
   echo -e "${CYAN}Uso:${RESET} ./blackopsdocker_manager.sh {install|uninstall|help}\n"
   echo -e "  ${GREEN}install${RESET}    - Instala el comando global blackopsdocker"
   echo -e "  ${RED}uninstall${RESET}  - Desinstala el comando global blackopsdocker"
-  echo -e "  help        - Muestra esta ayuda\n"
-  echo -e "Ejemplo:"
+  echo -e "  help        - Muestra esta ayuda"
+  echo -e "\nEjemplo:"
   echo -e "  ${GREEN}./blackopsdocker_manager.sh install${RESET}"
 }
-
-# ========== MAIN ========== #
 
 if [[ $# -ne 1 ]]; then
   usage
