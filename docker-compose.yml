@@ -61,7 +61,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik_config:/etc/traefik:ro
-      - /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/acme.json:/acme.json
+      - /backup_raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/acme.json:/acme.json
       - traefik_logs:/var/log/traefik
     networks:
       - web
@@ -154,47 +154,47 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_portainer_data
+      device: /backup_raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_portainer_data
       o: bind
 
   uptime_kuma_data:
     driver: local
     driver_opts:
       type: none
-      device: /raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_uptime_kuma_data
+      device: /backup_raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_uptime_kuma_data
       o: bind
 
   traefik_logs:
     driver: local
     driver_opts:
       type: none
-      device: /raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_traefik_logs
+      device: /backup_raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_traefik_logs
       o: bind
 
   prometheus_data:
     driver: local
     driver_opts:
       type: none
-      device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/prometheus
+      device: /backup_raid0/ftpsv/ftp/Docker/BlackOpsDocker/prometheus
       o: bind
 
   jaeger_proxy_config:
     driver: local
     driver_opts:
       type: none
-      device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/jaeger
+      device: /backup_raid0/ftpsv/ftp/Docker/BlackOpsDocker/jaeger
       o: bind
 
   ftp_data:
     driver: local
     driver_opts:
       type: none
-      device: /raid0/ftpsv/ftp
+      device: /backup_raid0/ftpsv/ftp
       o: bind
 
   traefik_config:
     driver: local
     driver_opts:
       type: none
-      device: /raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik
+      device: /backup_raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik
       o: bind
