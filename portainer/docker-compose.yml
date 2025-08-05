@@ -14,5 +14,5 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_portainer_data
+      device: /backup_raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_portainer_data
       o: bind

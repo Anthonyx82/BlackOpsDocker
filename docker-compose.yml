@@ -48,7 +48,7 @@ services:
       - USERS=${FTP_USERS}
       - ADDRESS=${FTP_ADDRESS}
     volumes:
-      - ftp_data:/raid0/ftpsv/ftp
+      - ftp_data:/backup_raid0/ftpsv/ftp
     restart: unless-stopped
 
   traefik:
