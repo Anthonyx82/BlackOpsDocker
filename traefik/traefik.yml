@@ -33,7 +33,7 @@ certificatesResolvers:
   myresolver:
     acme:
       email: "antoniomartinmanzanares2004@gmail.com"  # Pon aquí tu email para Let’s Encrypt
-      storage: "acme.json"
+      storage: "/acme.json"
       keyType: "RSA4096"
       httpChallenge:
         entryPoint: "web"  # Desafío HTTP para obtener el certificado

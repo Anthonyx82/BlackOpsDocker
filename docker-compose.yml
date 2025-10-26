@@ -1,4 +1,13 @@
 services:
+
+  telegram-ip-bot:
+    image: anthonyx82/telegram-ip-bot:latest
+    container_name: telegram-ip-bot
+    environment:
+      BOT_TOKEN: "8036806503:AAEtdhvJD2ZLtcrpdwe-eG6h4auHxWMD-5Y"
+      CHAT_ID: "1214787378"
+    restart: always
+
   uptime-kuma:
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
@@ -38,21 +47,8 @@ services:
       - "traefik.http.routers.prometheus.middlewares=prometheus-auth"
       - "traefik.http.middlewares.prometheus-auth.basicauth.users=${PROMETHEUS_AUTH_USERPASS}"
 
-  ftp:
-    image: anthonyx82/ftp_antoniomartin
-    container_name: ftp
-    ports:
-      - "21:21"
-      - "21000-21010:21000-21010"
-    environment:
-      - USERS=${FTP_USERS}
-      - ADDRESS=${FTP_ADDRESS}
-    volumes:
-      - ftp_data:/backup_raid0/ftpsv/ftp
-    restart: unless-stopped
-
   traefik:
-    image: traefik:latest
+    image: traefik:v3.5
     container_name: traefik
     restart: unless-stopped
     ports:
@@ -61,7 +57,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik_config:/etc/traefik:ro
-      - /backup_raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik/acme.json:/etc/traefik/acme.json
+      - /mnt/raid0/BlackOpsDocker/traefik/acme.json:/etc/traefik/acme.json
       - traefik_logs:/var/log/traefik
     networks:
       - web
@@ -154,47 +150,40 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /backup_raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_portainer_data
+      device: /mnt/raid0/BlackOpsDocker/portainer
       o: bind
 
   uptime_kuma_data:
     driver: local
     driver_opts:
       type: none
-      device: /backup_raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_uptime_kuma_data
+      device: /mnt/raid0/BlackOpsDocker/akuma
       o: bind
 
   traefik_logs:
     driver: local
     driver_opts:
       type: none
-      device: /backup_raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_traefik_logs
+      device: /mnt/raid0/BlackOpsDocker/traefik/logs
       o: bind
 
   prometheus_data:
     driver: local
     driver_opts:
       type: none
-      device: /backup_raid0/ftpsv/ftp/Docker/BlackOpsDocker/prometheus
+      device: /mnt/raid0/BlackOpsDocker/prometheus
       o: bind
 
   jaeger_proxy_config:
     driver: local
     driver_opts:
       type: none
-      device: /backup_raid0/ftpsv/ftp/Docker/BlackOpsDocker/jaeger
-      o: bind
-
-  ftp_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: /backup_raid0/ftpsv/ftp
+      device: /mnt/raid0/BlackOpsDocker/jaeger
       o: bind
 
   traefik_config:
     driver: local
     driver_opts:
       type: none
-      device: /backup_raid0/ftpsv/ftp/Docker/BlackOpsDocker/traefik
+      device: /mnt/raid0/BlackOpsDocker/traefik
       o: bind
