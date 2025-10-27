@@ -4,8 +4,8 @@ services:
     image: anthonyx82/telegram-ip-bot:latest
     container_name: telegram-ip-bot
     environment:
-      BOT_TOKEN: "8036806503:AAEtdhvJD2ZLtcrpdwe-eG6h4auHxWMD-5Y"
-      CHAT_ID: "1214787378"
+      BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      CHAT_ID: ${TELEGRAM_CHAT_ID}
     restart: always
 
   uptime-kuma:
