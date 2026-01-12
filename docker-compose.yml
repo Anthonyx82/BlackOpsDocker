@@ -1,5 +1,4 @@
 services:
-
   telegram-ip-bot:
     image: anthonyx82/telegram-ip-bot:latest
     container_name: telegram-ip-bot
@@ -48,7 +47,7 @@ services:
       - "traefik.http.middlewares.prometheus-auth.basicauth.users=${PROMETHEUS_AUTH_USERPASS}"
 
   traefik:
-    image: traefik:v3.5
+    image: traefik:latest
     container_name: traefik
     restart: unless-stopped
     ports:
