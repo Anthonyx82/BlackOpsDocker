@@ -8,7 +8,7 @@ services:
     restart: always
 
   uptime-kuma:
-    image: louislam/uptime-kuma:1
+    image: louislam/uptime-kuma:2.0.2
     container_name: uptime-kuma
     restart: unless-stopped
     environment:
@@ -129,14 +129,26 @@ services:
       - "traefik.http.middlewares.glances-auth.basicauth.users=${GLANCES_AUTH_USERPASS}"
 
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ce:lts
     container_name: portainer
     restart: always
     ports:
-      - "9000:9000"
+      - "8000:8000"
+      - "9443:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+
+  portainer_agent:
+    image: portainer/agent:lts
+    container_name: portainer_agent
+    restart: always
+    ports:
+      - "9001:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      - /:/host
 
 networks:
   web:

@@ -1,7 +1,41 @@
+# Entorno y configuración sensible
 .env
 acme.json
-logs/
+acme.json.bak
 *.pem
 *.key
+*.db*
+portainer.key
+portainer.pub
+
+# Logs
+logs/
+*/logs/
+*.log
+akuma/error.log
+
+# Archivos temporales de editores
 *~
 *.swp
+
+# Directorios de Portainer
+portainer/docker_config/
+portainer/bin/
+portainer/certs/
+portainer/chisel/
+portainer/compose/
+portainer/tls/
+
+# Archivos y carpetas de Akuma
+akuma/kuma.db
+akuma/kuma.db-shm
+akuma/kuma.db-wal
+akuma/screenshots/
+akuma/upload/
+
+# Ignore potenciales archivos locales de Jaeger y Prometheus si generan logs temporales
+jaeger/*.log
+prometheus/*.log
+
+# Otros docker-compose temporales
+*.override.yml

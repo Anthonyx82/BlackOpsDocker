@@ -23,3 +23,18 @@ http:
           banTime: 4h
           whitelist:
             - 127.0.0.1
+
+  # -------------------------------------------------------------
+  # Servicio balanceado 70/30 entre PC1 y PC2
+  # -------------------------------------------------------------
+  #services:
+    #springboot-service:
+      #loadBalancer:
+        # Servidores que forman el backend
+        #servers:
+          #- url: "http://127.0.0.1:8080"      # PC1 App (local)
+            #weight: 7                         # Peso 70%
+          #- url: "http://192.168.1.50:8080"  # PC2 App (LAN)
+            #weight: 3                         # Peso 30%
+        # Nota: los pesos determinan la proporción del tráfico
+        # sticky: true   # opcional si quieres sesiones persistentes
