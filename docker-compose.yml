@@ -77,7 +77,7 @@ services:
       - web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`mail.workoutnoteapp.com`)"
+      - "traefik.http.routers.whoami.rule=Host(`mail.web82.es`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
 
