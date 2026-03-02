@@ -79,16 +79,11 @@ services:
       - web
     labels:
       - "traefik.enable=true"
-
-      # ROOT → GitHub Pages
-      - "traefik.http.routers.web82-root.rule=Host(`web82.es`) && Path(`/`)"
+      - "traefik.http.routers.web82-root.rule=Host(`web82.es`) && PathPrefix(`/`)"
       - "traefik.http.routers.web82-root.entrypoints=websecure"
       - "traefik.http.routers.web82-root.tls.certresolver=letsencrypt"
       - "traefik.http.routers.web82-root.priority=1"
       - "traefik.http.routers.web82-root.service=github-pages"
-
-      - "traefik.http.services.github-pages.loadbalancer.server.scheme=https"
-      - "traefik.http.services.github-pages.loadbalancer.server.port=443"
       - "traefik.http.services.github-pages.loadbalancer.server.url=https://anthonyx82.github.io"
 
   whoami:
