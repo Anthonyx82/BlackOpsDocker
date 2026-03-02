@@ -70,6 +70,27 @@ services:
       - "traefik.http.routers.api.middlewares=dashboard-auth"
       - "traefik.http.middlewares.dashboard-auth.basicauth.users=${TRAEFIK_DASHBOARD_AUTH_USERPASS}"
 
+
+  github-pages:
+    image: alpine
+    container_name: github-pages
+    command: sh -c "sleep infinity"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+
+      # ROOT → GitHub Pages
+      - "traefik.http.routers.web82-root.rule=Host(`web82.es`) && Path(`/`)"
+      - "traefik.http.routers.web82-root.entrypoints=websecure"
+      - "traefik.http.routers.web82-root.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.web82-root.priority=1"
+      - "traefik.http.routers.web82-root.service=github-pages"
+
+      - "traefik.http.services.github-pages.loadbalancer.server.scheme=https"
+      - "traefik.http.services.github-pages.loadbalancer.server.port=443"
+      - "traefik.http.services.github-pages.loadbalancer.server.url=https://anthonyx82.github.io"
+
   whoami:
     image: traefik/whoami
     restart: unless-stopped
