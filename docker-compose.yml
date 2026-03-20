@@ -21,7 +21,7 @@ services:
       - web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.uptime-kuma.rule=Host(`kuma82.ddns.net`)"
+      - "traefik.http.routers.uptime-kuma.rule=Host(`status.web82.es`)"
       - "traefik.http.routers.uptime-kuma.entrypoints=websecure"
       - "traefik.http.routers.uptime-kuma.tls.certresolver=myresolver"
       - "traefik.http.services.uptime-kuma.loadbalancer.server.port=3001"
