@@ -1,18 +1,30 @@
 services:
-  portainerOLD:
-    image: portainer/portainer-ce:latest
-    container_name: portainerOLD
+  portainer:
+    image: portainer/portainer-ce:lts
+    container_name: portainer1
     restart: always
     ports:
-      - "127.0.0.1:9001:9000"
+      - "8001:8000"
+      - "9444:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+
+  portainer_agent:
+    image: portainer/agent:lts
+    container_name: portainer_agent2
+    restart: always
+    ports:
+      - "9002:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      - /:/host
 
 volumes:
   portainer_data:
     driver: local
     driver_opts:
       type: none
-      device: /backup_raid0/ftpsv/ftp/Docker/volumes/black_ops_docker_portainer_data
+      device: /mnt/raid0/BlackOpsDocker/portainer
       o: bind

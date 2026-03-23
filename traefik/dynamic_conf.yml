@@ -15,6 +15,10 @@ http:
           names: whoami,nginx
           sablierUrl: http://sablier:10000
           sessionDuration: 1m
+    ratelimit:
+      rateLimit:
+        average: 5
+        burst: 10
     fail2ban:
       plugin:
         fail2-ban:

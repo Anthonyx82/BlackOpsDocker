@@ -48,6 +48,18 @@ http:
       tls:
         certResolver: "myresolver"
 
+    # Catch-all para hosts inválidos
+    catchall:
+      rule: "HostRegexp(`{host:.+}`)"
+      service: "noop@internal"
+      entryPoints:
+        - "web"
+        - "websecure"
+      middlewares:
+        - ratelimit
+        - fail2ban
+
+
 experimental:
   plugins:
     sablier:
