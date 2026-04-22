@@ -16,10 +16,6 @@ Para facilitar la gestión conjunta, incluye el script `blackopsdocker` que perm
 .
 ├── akuma/
 │   └── docker-compose.yml
-├── blackopsdocker_manager.sh
-├── blackopsdocker.sh
-├── ftp-server/
-│   └── docker-compose.yml
 ├── glances/
 │   └── docker-compose.yml
 ├── jaeger/

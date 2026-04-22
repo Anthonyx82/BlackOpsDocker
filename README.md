@@ -16,10 +16,6 @@ To ease management, it includes the `blackopsdocker` script that lets you contro
 .
 ├── akuma/
 │   └── docker-compose.yml
-├── blackopsdocker_manager.sh
-├── blackopsdocker.sh
-├── ftp-server/
-│   └── docker-compose.yml
 ├── glances/
 │   └── docker-compose.yml
 ├── jaeger/
